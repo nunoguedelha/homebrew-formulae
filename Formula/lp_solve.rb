@@ -20,10 +20,15 @@ class NumpyHasHeaders < Requirement
 end
 
 class LpSolve < Formula
-  homepage "http://sourceforge.net/projects/lpsolve/"
+  homepage "https://sourceforge.net/projects/lpsolve/"
   url "https://downloads.sourceforge.net/lpsolve/lp_solve_5.5.2.0_source.tar.gz"
   version "5.5.2.0" # automatic version parser spits out "solve" as version
   sha256 "5827a30b143105283f398a09419ea608719a2d7699ecea165a66d521803bcc9c"
+
+  bottle do
+    cellar :any_skip_relocation
+    sha256 "40e0fb01f795a4e7583802dadd04c8c08fdbe4fe776ea5602a78997fc2575065" => :x86_64_linux
+  end
 
   depends_on :python => :optional
   depends_on NumpyHasHeaders.new if build.with? "python"
@@ -51,11 +56,11 @@ class LpSolve < Formula
 
     cd "lpsolve55" do
       if OS.mac?
-        system "sh ccc.osx # lpsolve55 library"
+        system "sh", "ccc.osx", "#", "lpsolve55", "library"
         lib.install Dir["./bin/osx64/*.a"]
         lib.install Dir["./bin/osx64/*.dylib"]
       else
-        system "sh ccc # lpsolve55 library"
+        system "sh", "ccc", "#", "lpsolve55", "library"
         lib.install Dir["./bin/ux64/*.a"]
         lib.install Dir["./bin/ux64/*.so"]
       end
@@ -63,10 +68,10 @@ class LpSolve < Formula
 
     cd "lp_solve" do
       if OS.mac?
-        system "sh ccc.osx # lp_solve executable"
+        system "sh", "ccc.osx", "#", "lp_solve", "executable"
         bin.install "./bin/osx64/lp_solve"
       else
-        system "sh ccc # lp_solve executable"
+        system "sh", "ccc", "#", "lp_solve", "executable"
         bin.install "./bin/ux64/lp_solve"
       end
     end
@@ -126,6 +131,7 @@ class LpSolve < Formula
     def caveats; <<-EOS.undent
       For non-homebrew Python, you need to amend your PYTHONPATH like so:
         export PYTHONPATH=#{HOMEBREW_PREFIX}/lib/#{which_python}/site-packages:$PYTHONPATH
+
       Python examples and doc are installed to #{HOMEBREW_PREFIX}/share/lp_solve
       EOS
     end
@@ -134,6 +140,7 @@ class LpSolve < Formula
   test do
     input = <<-EOS.undent
       max: 143 x + 60 y;
+
       120 x + 210 y <= 15000;
       110 x + 30 y <= 4000;
       x + y <= 75;
@@ -160,4 +167,3 @@ index 2ef654f..7b06ef8 100644
  
  
  /* Active inverse logic (default is optimized original etaPFI)               */
- 
